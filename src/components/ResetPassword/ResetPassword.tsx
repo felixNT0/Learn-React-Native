@@ -1,10 +1,23 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
-import {Keyboard, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Keyboard,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import navigationString from '../../navigations/navigationString';
 import AppOtpCodeKeyboard from '../AppOtpCodeKeyboard/AppOtpCodeKeyboard';
+import CreatePlanHeader from '../CreatePlan/CreatePlanHeader';
 import OTPInputField from '../OTPInputField/OTPInputField';
 
-const ResetPassword = () => {
+import {RFValue} from 'react-native-responsive-fontsize';
+
+const {height} = Dimensions.get('window');
+
+const ResetPassword = ({navigation}: any) => {
   const [otpValue, setOtpValue] = useState('');
 
   const handleKeyPress = (value: any) => {
@@ -15,8 +28,6 @@ const ResetPassword = () => {
     }
   };
 
-  console.log(otpValue);
-
   useEffect(() => {
     Keyboard.dismiss();
   });
@@ -24,7 +35,13 @@ const ResetPassword = () => {
   return (
     <ScrollView keyboardShouldPersistTaps="never">
       <View style={styles.container}>
-        <Text style={styles.title}>Create a 6-digit PIN</Text>
+        <CreatePlanHeader
+          title="Create a 6-digit PIN"
+          IconName="arrow-back-outline"
+          onPress={() => {
+            navigation.navigate(navigationString.SIGN_IN);
+          }}
+        />
         <Text style={styles.description}>
           You’ll use this PIN to sign in and confirm transactions
         </Text>
@@ -43,7 +60,7 @@ const ResetPassword = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 70,
+    marginTop: 30,
     marginHorizontal: 20,
   },
 
@@ -55,14 +72,15 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 25,
+    fontSize: RFValue(25, height),
+    color: 'black',
     fontWeight: 'bold',
     marginBottom: 32,
   },
 
   description: {
     color: '#71879C',
-    fontSize: 15,
+    fontSize: RFValue(15, height),
     marginBottom: 30,
   },
 
@@ -79,7 +97,7 @@ const styles = StyleSheet.create({
   forget_password_link: {
     color: '#0898A0',
     marginTop: 30,
-    fontSize: 15,
+    fontSize: RFValue(15, height),
     textAlign: 'center',
   },
 });

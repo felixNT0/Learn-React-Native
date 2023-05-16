@@ -1,16 +1,11 @@
-import {AxiosResponse} from 'axios';
 import http from '../../api/http';
 
-export type TUserLoginData = {
-  email?: string;
-  username?: string;
-  password: string;
+export type TCreatePlanData = {
+  plan_name: string;
+  target_amount: number;
+  maturity_date: string | any;
 };
 
-export type TLoginResponse = AxiosResponse<{
-  accessToken: string;
-}>;
-
-export const createPlan = (data: TUserLoginData): Promise<TLoginResponse> => {
-  return http.post('/sessions', data);
+export const createPlan = (data: TCreatePlanData) => {
+  return http.post('/plans', data);
 };

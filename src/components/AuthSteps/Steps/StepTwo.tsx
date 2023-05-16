@@ -1,13 +1,19 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
+
+import {RFValue} from 'react-native-responsive-fontsize';
+
+const {height} = Dimensions.get('window');
 
 const StepTwo = ({children}: any) => {
   return (
-    <View style={styles.container}>
-      <Image
-        source={require('../../../assets/Image-Step-2.png')}
-        style={styles.image}
-      />
+    <View>
+      <View style={styles.image_holder}>
+        <Image
+          source={require('../../../assets/Image-Step-2.png')}
+          style={styles.image}
+        />
+      </View>
       <View style={styles.progress_dot}>{children}</View>
       <Text style={styles.title}>Superior Selection</Text>
       <Text style={styles.description}>
@@ -22,29 +28,26 @@ const styles = StyleSheet.create({
   image: {
     width: 200,
     height: 200,
-    marginTop: 100,
-  },
-  container: {
-    display: 'flex',
-    alignItems: 'center',
+    marginTop: 70,
   },
 
   progress_dot: {
     marginTop: 50,
   },
-
+  image_holder: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   title: {
-    // fontFamily: "Tomato Grotesk",
-    fontSize: 20,
+    fontSize: RFValue(20, height),
     color: 'rgba(184, 0, 116, 1)',
     marginBottom: 20,
     marginTop: 30,
-    marginRight: 235,
   },
 
   description: {
-    // fontFamily: "Tomato Grotesk",
-    fontSize: 12,
+    fontSize: RFValue(12, height),
     color: '#222222',
   },
 });

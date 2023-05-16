@@ -1,6 +1,10 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
 import AppButton from '../AppButton/AppButton';
+
+import {RFValue} from 'react-native-responsive-fontsize';
+
+const {height} = Dimensions.get('window');
 
 const OnSuccess = ({HeaderText, BodyText, onPress, buttonText}: any) => {
   return (
@@ -31,14 +35,14 @@ const styles = StyleSheet.create({
     marginTop: 300,
   },
   title: {
-    fontSize: 25,
+    fontSize: RFValue(20, height),
     fontWeight: 'bold',
     marginBottom: 17,
     marginTop: 30,
     color: '#222222',
   },
   description: {
-    fontSize: 16,
+    fontSize: RFValue(16, height),
     color: '#71879C',
   },
   buttonContainer: {

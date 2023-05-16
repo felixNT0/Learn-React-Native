@@ -1,5 +1,15 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+import {RFValue} from 'react-native-responsive-fontsize';
+
+const {height} = Dimensions.get('window');
 
 const AppNumberKeyboard = ({onButtonPress}: any) => {
   const buttons = [
@@ -66,7 +76,7 @@ const styles = StyleSheet.create({
     width: 150,
   },
   buttonText: {
-    fontSize: 24,
+    fontSize: RFValue(24, height),
     fontWeight: 'bold',
   },
 });

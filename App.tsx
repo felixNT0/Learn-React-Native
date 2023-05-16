@@ -6,43 +6,39 @@
  */
 
 import React from 'react';
-import {SafeAreaView} from 'react-native';
+import {Dimensions, SafeAreaView, StyleSheet, View} from 'react-native';
 
+import {NavigationContainer} from '@react-navigation/native';
 import {QueryClient, QueryClientProvider} from 'react-query';
-import AppProvider from './src/contexts/AuthContext';
+import AppProvider from './src/contexts/AppContext';
 import Routes from './src/routes/Index';
+
+const {width, height} = Dimensions.get('window');
 
 const queryClient = new QueryClient();
 
 function App(): JSX.Element {
   return (
     <SafeAreaView>
-      <QueryClientProvider client={queryClient}>
-        <AppProvider>
-          <Routes />
-        </AppProvider>
-      </QueryClientProvider>
+      <View style={styles.bg}>
+        <NavigationContainer>
+          <QueryClientProvider client={queryClient}>
+            <AppProvider>
+              <Routes />
+            </AppProvider>
+          </QueryClientProvider>
+        </NavigationContainer>
+      </View>
     </SafeAreaView>
   );
 }
 
-// const styles = StyleSheet.create({
-//   sectionContainer: {
-//     marginTop: 32,
-//     paddingHorizontal: 24,
-//   },
-//   sectionTitle: {
-//     fontSize: 24,
-//     fontWeight: '600',
-//   },
-//   sectionDescription: {
-//     marginTop: 8,
-//     fontSize: 18,
-//     fontWeight: '400',
-//   },
-//   highlight: {
-//     fontWeight: '700',
-//   },
-// });
+const styles = StyleSheet.create({
+  bg: {
+    backgroundColor: '#FFFFFF',
+    height: height,
+    width: width,
+  },
+});
 
 export default App;

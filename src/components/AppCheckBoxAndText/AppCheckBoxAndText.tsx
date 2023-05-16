@@ -1,7 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {RFValue} from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+const {height} = Dimensions.get('window');
 
 function AppCheckBoxAndText({checked, text}: any) {
   return (
@@ -44,7 +53,7 @@ const styles = StyleSheet.create({
     borderColor: '#0898A0',
   },
   checkboxLabel: {
-    fontSize: 16,
+    fontSize: RFValue(16, height),
     color: 'black',
   },
 });

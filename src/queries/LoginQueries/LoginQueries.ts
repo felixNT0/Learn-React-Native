@@ -1,7 +1,7 @@
 import {AxiosResponse} from 'axios';
 import http from '../../api/http';
 
-export type TUserLoginData = {
+export type TUserLoginPayload = {
   email_address: string;
   password: string;
 };
@@ -17,6 +17,6 @@ export type TLoginResponse = AxiosResponse<{
   token: string;
 }>;
 
-export const loginUser = (data: TUserLoginData): Promise<TLoginResponse> => {
+export const loginUser = (data: TUserLoginPayload): Promise<TLoginResponse> => {
   return http.post('/sessions', data, {hasAuth: false});
 };

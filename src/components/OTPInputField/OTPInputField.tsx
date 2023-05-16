@@ -1,5 +1,8 @@
 import React, {useRef} from 'react';
-import {StyleSheet, TextInput, View} from 'react-native';
+import {Dimensions, StyleSheet, TextInput, View} from 'react-native';
+import {RFValue} from 'react-native-responsive-fontsize';
+
+const {height} = Dimensions.get('window');
 
 const OTPInputField = ({numberOfInputs, code, setCode}: any) => {
   const inputRefs = useRef<any>([]);
@@ -56,7 +59,7 @@ const styles = StyleSheet.create({
   input: {
     height: 48,
     width: 48,
-    fontSize: 24,
+    fontSize: RFValue(24, height),
     fontWeight: 'bold',
     textAlign: 'center',
     borderWidth: 1.5,

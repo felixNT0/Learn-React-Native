@@ -1,5 +1,15 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+import {RFValue} from 'react-native-responsive-fontsize';
+
+const {height} = Dimensions.get('window');
 
 const AppOtpCodeKeyboard = ({onKeyPress}: any) => {
   const renderKeypadButton = (value: any) => (
@@ -39,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: RFValue(20, height),
     fontWeight: 'bold',
     color: '#0898A0',
   },

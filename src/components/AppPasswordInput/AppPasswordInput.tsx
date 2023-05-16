@@ -1,12 +1,16 @@
 import React, {useState} from 'react';
 import {
+  Dimensions,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import {RFValue} from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+const {height} = Dimensions.get('window');
 
 const AppPasswordInput = ({placeholder, value, onChangeText, label}: any) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -25,12 +29,13 @@ const AppPasswordInput = ({placeholder, value, onChangeText, label}: any) => {
         style={[styles.input, {borderWidth: borderWidth}]}
         placeholder={placeholder}
         value={value}
+        placeholderTextColor="gray"
         textContentType="newPassword"
         onBlur={() => {
           setBorderWidth(1);
         }}
         onFocus={() => {
-          setBorderWidth(3);
+          setBorderWidth(2);
         }}
         onChangeText={onChangeText}
         secureTextEntry={!showPassword}
@@ -52,32 +57,32 @@ const styles = StyleSheet.create({
   showPasswordButton: {
     marginLeft: 8,
     position: 'absolute',
-    top: 25,
-    right: 35,
+    top: 18,
+    right: 20,
   },
   container: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    paddingVertical: 8,
+    borderRadius: 10,
     flexDirection: 'column',
   },
   labelContainer: {
     position: 'absolute',
-    top: -1,
+    top: -7,
     left: 35,
     zIndex: 1,
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 4,
+    borderRadius: 15,
   },
   label: {
-    fontSize: 15,
+    fontSize: RFValue(15, height),
     fontWeight: '500',
     color: '#0898A0',
   },
   input: {
-    fontSize: 16,
+    fontSize: RFValue(16, height),
     fontWeight: '400',
-    color: '#000000',
+    color: 'black',
     borderColor: '#0898A0',
     borderRadius: 10,
     paddingVertical: 15,

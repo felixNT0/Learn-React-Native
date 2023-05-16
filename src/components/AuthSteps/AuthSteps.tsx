@@ -1,7 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import navigationString from '../../navigations/navigationString';
 import AppButton from '../AppButton/AppButton';
 import StepsProgressDot from './StepProgressDot/StepProgressDot';
 import StepOne from './Steps/StepOne';
@@ -31,11 +38,11 @@ const AuthSteps = ({navigation}: any) => {
   };
 
   const navigateToSignIn = () => {
-    console.log(navigation);
+    navigation.navigate(navigationString.SIGN_IN);
   };
 
   const navigateToSignUp = () => {
-    console.log(navigation);
+    navigation.navigate(navigationString.SIGN_UP);
   };
 
   const renderNextButton = () => {
@@ -92,38 +99,40 @@ const AuthSteps = ({navigation}: any) => {
   }, [currentStepIndex]);
 
   return (
-    <View style={styles.container}>
-      <Components>
-        <StepsProgressDot
-          currentStep={currentStepIndex}
-          totalSteps={3}
-          currentStepColor={stepColor}
-        />
-      </Components>
+    <ScrollView>
+      <View style={styles.container}>
+        <Components>
+          <StepsProgressDot
+            currentStep={currentStepIndex}
+            totalSteps={3}
+            currentStepColor={stepColor}
+          />
+        </Components>
 
-      <View style={styles.buttonContainer}>
-        {renderBackButton()}
-        {renderNextButton()}
-      </View>
-      {currentStepIndex === steps.length - 1 && (
-        <View style={styles.auth_buttons}>
-          <AppButton
-            backgroundColor={'#0898A0'}
-            label={'Sign Up'}
-            labelColor={'#FFFFFF'}
-            width={390}
-            onPress={navigateToSignUp}
-          />
-          <AppButton
-            backgroundColor={'rgba(113, 135, 156, 0.1)'}
-            label={'Sign In'}
-            labelColor={'#0898A0'}
-            width={390}
-            onPress={navigateToSignIn}
-          />
+        <View style={styles.buttonContainer}>
+          {renderBackButton()}
+          {renderNextButton()}
         </View>
-      )}
-    </View>
+        {currentStepIndex === steps.length - 1 && (
+          <View style={styles.auth_buttons}>
+            <AppButton
+              backgroundColor={'#0898A0'}
+              label={'Sign Up'}
+              labelColor={'#FFFFFF'}
+              width={330}
+              onPress={navigateToSignUp}
+            />
+            <AppButton
+              backgroundColor={'rgba(113, 135, 156, 0.1)'}
+              label={'Sign In'}
+              labelColor={'#0898A0'}
+              width={330}
+              onPress={navigateToSignIn}
+            />
+          </View>
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -131,7 +140,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
     marginHorizontal: 15,
   },
 
@@ -162,6 +170,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 30,
     marginTop: 33,
+    marginBottom: 30,
   },
 });
 

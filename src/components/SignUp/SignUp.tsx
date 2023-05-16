@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {
+  Dimensions,
   Keyboard,
   ScrollView,
   StyleSheet,
@@ -10,15 +11,23 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import PhoneInput from 'react-native-phone-number-input';
+import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useMutation} from 'react-query';
+import {useAppContext} from '../../contexts/AppContext';
+import navigationString from '../../navigations/navigationString';
 import {signUpUser} from '../../queries/SignUpQueries/SignUpQueries';
+import {setAuthToken} from '../../utils/localStorage';
 import AppButton from '../AppButton/AppButton';
 import AppCheckBoxAndText from '../AppCheckBoxAndText/AppCheckBoxAndText';
 import AppLabelTextInput from '../AppLabelTextInput/AppLabelTextInput';
 import AppPasswordInput from '../AppPasswordInput/AppPasswordInput';
+import NavigationButton from '../CreatePlan/NavigationButton';
 import OnSuccess from '../OnSuccess/OnSuccess';
-// import { setAuthToken } from '../../utils/authToken';
+
+import {RFValue} from 'react-native-responsive-fontsize';
+
+const {height} = Dimensions.get('window');
 
 function SignUp({navigation}: any) {
   const [checked, setChecked] = useState({
@@ -29,22 +38,26 @@ function SignUp({navigation}: any) {
 
   const [next, setNext] = useState('First_Screen');
 
+  const {updateCurrentUser} = useAppContext();
+
   const [values, setValues] = useState({
     email_address: '',
     password: '',
     first_name: '',
     last_name: '',
-    date_of_birth: '',
+    date_of_birth: new Date(),
     phone_number: '',
     username: '',
   });
 
   const [openDateModal, setOpenDateModal] = useState(false);
+  const [showDateValue, setShowDateValue] = useState(false);
 
   const validateInput = () => {
-    const length = values.password.length >= 8;
-    const uppercaseRegex = /[A-Z]/.test(values.password);
-    const uniqueCharRegex = /[!@#$%^&*?]/.test(values.password);
+    const length = /([A-Za-z\\d@$!%*?&]{8,})/.test(values.password);
+    const uppercaseRegex = /(?=.*[A-Z])/.test(values.password);
+    const uniqueCharRegex = /(?=.*[@$!%*?&])/.test(values.password);
+
     if (length && uniqueCharRegex && uppercaseRegex) {
       return true;
     }
@@ -54,30 +67,46 @@ function SignUp({navigation}: any) {
     Keyboard.dismiss(); // hide the keyboard
   };
 
-  const currentDate = new Date();
+  const year = values.date_of_birth.getFullYear();
+  const month = values.date_of_birth.getMonth() + 1; // add 1 because getMonth() returns a zero-based index
+  const day = values.date_of_birth.getDate();
 
-  console.log(navigation);
+  const dateOfBirth = `${year}-${month}-${day}`;
 
-  const {isLoading, isSuccess} = useMutation(signUpUser, {
+  const showError = (error: any) => {
+    Toast.show({
+      type: 'error',
+      text1: 'Sign Up Failed',
+      text2: error,
+    });
+  };
+
+  const {isLoading, isSuccess, mutate} = useMutation(signUpUser, {
     onSuccess: (data: any) => {
-      console.log(data);
-      // setAuthToken();
+      setAuthToken(data.data.token);
+
+      setNext('Success_Screen');
+
+      updateCurrentUser();
+    },
+    onError: (err: any) => {
+      setNext('First_Screen');
+
+      showError(err.message);
     },
   });
 
   const handleSubmit = () => {
-    console.log(values);
-    setNext('Success_Screen');
-    // mutate(values);
+    mutate(values);
   };
 
   const openDate = () => setOpenDateModal(true);
 
   useEffect(() => {
     if (values.password) {
-      const length = values.password.length >= 8;
-      const uppercaseRegex = /[A-Z]/.test(values.password);
-      const uniqueCharRegex = /[!@#$%^&*?]/.test(values.password);
+      const length = /([A-Za-z\\d@$!%*?&]{8,})/.test(values.password);
+      const uppercaseRegex = /(?=.*[A-Z])/.test(values.password);
+      const uniqueCharRegex = /(?=.*[@$!%*?&])/.test(values.password);
 
       if (length) {
         setChecked((prev: any) => ({...prev, length: true}));
@@ -98,7 +127,7 @@ function SignUp({navigation}: any) {
         setChecked((prev: any) => ({...prev, unique: false}));
       }
     }
-  }, [values.password]);
+  }, [values.password, checked.length, checked.unique, checked.upperCase]);
 
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
@@ -159,15 +188,29 @@ function SignUp({navigation}: any) {
 
                 <Text style={styles.already_have_account}>
                   Already have an account?{' '}
-                  <Text style={{color: '#0898A0'}}>Sign In</Text>
+                  <Text
+                    style={{color: '#0898A0'}}
+                    onPress={() => {
+                      navigation.navigate(navigationString.SIGN_IN);
+                    }}>
+                    Sign In
+                  </Text>
                 </Text>
               </View>
             </>
           )}
-
           <>
             {next === 'Second_Screen' && (
               <>
+                <View style={{marginTop: -30, marginBottom: 10}}>
+                  <NavigationButton
+                    IconName="arrow-back-outline"
+                    onPress={() => {
+                      setNext('First_Screen');
+                    }}
+                  />
+                </View>
+
                 <Text style={styles.title}>Tell Us More About You</Text>
                 <Text style={styles.description}>
                   Please use your name as it appears on your ID.
@@ -210,8 +253,8 @@ function SignUp({navigation}: any) {
                         {borderWidth: 1},
                       ]}
                       textInputStyle={{
-                        marginTop: -5,
-                        bottom: -5,
+                        marginTop: -7,
+                        bottom: -4,
                         overflow: 'hidden',
                       }}
                       // layout="first"
@@ -233,34 +276,43 @@ function SignUp({navigation}: any) {
                     <AppLabelTextInput
                       label="Date of Birth"
                       placeholder="Choose date"
-                      value={values.date_of_birth}
+                      value={showDateValue ? dateOfBirth : 'Choose date'}
                     />
 
                     <Icon
-                      style={styles.showPasswordButton}
+                      style={styles.calenderIcon}
                       name="calendar-outline"
-                      size={30}
+                      size={23}
                       color={'rgba(8, 152, 160, 1)'}
                     />
                   </View>
                   <DatePicker
                     modal
                     open={openDateModal}
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     onConfirm={(date: any) => {
+                      setValues((prev: any) => ({
+                        ...prev,
+                        date_of_birth: date,
+                      }));
+                      setShowDateValue(true);
                       setOpenDateModal(false);
                     }}
                     onCancel={() => {
                       setOpenDateModal(false);
                     }}
-                    date={currentDate}
+                    mode="date"
+                    date={values.date_of_birth}
                     onDateChange={date =>
-                      setValues((prev: any) => ({...prev, date_of_birth: date}))
+                      setValues((prev: any) => ({
+                        ...prev,
+                        date_of_birth: date,
+                      }))
                     }
                   />
                   <AppButton
                     label="Sign Up"
                     onPress={handleSubmit}
+                    isLoading={isLoading}
                     disabled={
                       !(
                         values.first_name &&
@@ -272,24 +324,32 @@ function SignUp({navigation}: any) {
                     }
                   />
 
-                  <Text style={styles.already_have_account}>
-                    By clicking Continue, you agree to our{' '}
-                    <Text style={{color: '#0898A0'}}>Terms of Service</Text> and{' '}
-                    <Text style={{color: '#0898A0'}}>Privacy Policy.</Text>
-                  </Text>
+                  <View>
+                    <Text style={styles.dont_have_account}>
+                      By clicking Continue, you agree to our
+                    </Text>
+                    <View style={styles.terms_and_condition}>
+                      <Text style={{color: '#0898A0'}}>Terms of Service</Text>
+                      <Text style={{color: 'black'}}>and</Text>
+                      <Text style={{color: '#0898A0'}}>Privacy Policy.</Text>
+                    </View>
+                  </View>
                 </View>
               </>
             )}
           </>
-
-          {next === 'Success_Screen' && isSuccess && (
+          {isSuccess && next === 'Success_Screen' && (
             <OnSuccess
               HeaderText={'You just created your Rise account'}
               BodyText="Welcome to Rise, let’s take you home"
               buttonText="Okay"
+              onPress={() => {
+                navigation.navigate(navigationString.HOME_SCREEN);
+              }}
             />
           )}
         </View>
+        <Toast />
       </ScrollView>
     </TouchableWithoutFeedback>
   );
@@ -297,8 +357,8 @@ function SignUp({navigation}: any) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
-    marginHorizontal: 20,
+    marginTop: 70,
+    marginHorizontal: 15,
   },
   all_input: {
     display: 'flex',
@@ -307,14 +367,15 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   title: {
-    fontSize: 25,
+    fontSize: RFValue(25, height),
+    color: 'black',
     fontWeight: 'bold',
     marginBottom: 32,
   },
 
   description: {
     color: '#71879C',
-    fontSize: 15,
+    fontSize: RFValue(15, height),
   },
 
   input: {
@@ -329,33 +390,50 @@ const styles = StyleSheet.create({
 
   already_have_account: {
     color: '#71879C',
-    fontSize: 15,
+    fontSize: RFValue(15, height),
     textAlign: 'center',
-    marginTop: 130,
-    marginBottom: 15,
+    marginTop: 100,
+    marginBottom: 7,
+  },
+
+  dont_have_account: {
+    color: '#71879C',
+    fontSize: RFValue(15, height),
+    textAlign: 'center',
+    marginTop: 30,
+    marginBottom: 7,
+  },
+
+  terms_and_condition: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 7,
+    marginBottom: 10,
   },
 
   phone_number_container: {
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
-    paddingVertical: 8,
     flexDirection: 'column',
   },
   labelContainer: {
     position: 'absolute',
-    top: -1,
+    top: -7,
     left: 35,
     zIndex: 1,
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 4,
+    borderRadius: 15,
   },
   label: {
-    fontSize: 15,
+    fontSize: RFValue(15, height),
     fontWeight: '500',
     color: '#0898A0',
   },
   input_container: {
-    fontSize: 16,
+    fontSize: RFValue(16, height),
     width: '100%',
     height: 65,
     fontWeight: '400',
@@ -364,11 +442,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 30,
   },
-  showPasswordButton: {
+  calenderIcon: {
     marginLeft: 8,
     position: 'absolute',
-    top: 25,
-    right: 35,
+    top: 18,
+    right: 20,
   },
 });
 

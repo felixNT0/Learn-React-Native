@@ -1,5 +1,16 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+import {RFValue} from 'react-native-responsive-fontsize';
+
+const {height} = Dimensions.get('window');
 
 const AppButton = ({
   label,
@@ -8,6 +19,7 @@ const AppButton = ({
   labelColor = '#FFFFFF',
   disabled,
   width,
+  isLoading,
 }: any) => {
   return (
     <TouchableOpacity
@@ -22,7 +34,10 @@ const AppButton = ({
       ]}
       disabled={disabled}
       onPress={onPress}>
-      <Text style={[styles.label, {color: labelColor}]}>{label}</Text>
+      <View style={styles.button_and_loader}>
+        <Text style={[styles.label, {color: labelColor}]}>{label}</Text>
+        {isLoading && <ActivityIndicator size="small" color={labelColor} />}
+      </View>
     </TouchableOpacity>
   );
 };
@@ -33,8 +48,15 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 25,
   },
+  button_and_loader: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
   label: {
-    fontSize: 16,
+    fontSize: RFValue(16, height),
     fontWeight: 'bold',
     textAlign: 'center',
   },

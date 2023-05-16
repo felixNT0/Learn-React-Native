@@ -1,7 +1,12 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
+import {RFValue} from 'react-native-responsive-fontsize';
+
+const {width, height} = Dimensions.get('window');
 
 export default function RiseWelcomeComponent() {
+  const date = new Date();
+  const year = date.getFullYear();
   return (
     <View style={styles.container}>
       <View style={styles.image_and_text}>
@@ -11,7 +16,7 @@ export default function RiseWelcomeComponent() {
         />
         <Text style={styles.text}>Dollar investments that help you grow </Text>
       </View>
-      <Text style={styles.other_text}>All rights reserved (c) 2021</Text>
+      <Text style={styles.other_text}>All rights reserved (c) {year}</Text>
     </View>
   );
 }
@@ -22,10 +27,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     backgroundColor: '#0898A0',
-    height: '100%',
+    height: height,
+    width: width,
   },
   image_and_text: {
-    display: 'flex',
     alignItems: 'center',
   },
   image: {
@@ -36,13 +41,11 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    // fontFamily: 'Tomato Grotesk',
-    fontSize: 18,
+    fontSize: RFValue(18, height),
     color: '#FFFFFF',
   },
   other_text: {
-    // fontFamily: "Tomato Grotesk",
-    fontSize: 12,
+    fontSize: RFValue(12, height),
     color: '#FFFFFF',
     marginTop: 350,
   },
